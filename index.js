@@ -165,10 +165,10 @@ function searchStar(name) {
 	});
 }
 
-/* (async () => {
-	console.log(await getVideo("tushy", "a-very-special-anniversary"));
-	console.log(await searchSite("tushy", "anal"));
-	console.log(await searchSite("blacked", "anal"));
-
-	console.log(await searchStar("Kristen Scott"));
-})(); */
+module.exports = {
+	Video,
+	searchSite,
+	search,
+	getVideo,
+	searchStar
+}
