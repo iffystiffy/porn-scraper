@@ -9,7 +9,7 @@ npm install
 
 # Usage
 ```
-const scraper = require("./index");
+const scraper = require("./path/to/module");
 
 (async () => {
 	console.log(await scraper.getVideo("tushy", "a-very-special-anniversary")); // Searches for a specific video by Tushy
