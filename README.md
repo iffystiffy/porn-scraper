@@ -12,10 +12,18 @@ npm install
 const scraper = require("./path/to/module");
 
 (async () => {
-	console.log(await scraper.getVideo("tushy", "a-very-special-anniversary")); // Searches for a specific video by Tushy
-	console.log(await scraper.search("anal")); // Returns all videos matching "anal"
-  console.log(await scraper.searchStar("Kristen Scott")); // Returns all videos featuring Kristen Scott
-  console.log(await scraper.searchSite("tushy", "gia derza")); // Returns all Tushy videos featuring Gia Derza
+
+	// Searches for a specific video by Tushy
+	console.log(await scraper.getVideo({ studio: "tushy", id: "a-very-special-anniversary" }, ));
+	
+	// Returns all videos matching "anal"
+    	console.log(await scraper.search({ query: "anal" }));
+	
+	// Returns all videos featuring Kristen Scott
+    	console.log(await scraper.searchStar("Kristen Scott"));
+	
+	// Returns all Tushy videos featuring Gia Derza
+	console.log(await scraper.searchSite({ studio: "tushy", query: "gia derza" }));
 });
 ```
 
