@@ -15,15 +15,28 @@ class Video {
 	}
 };
 
-function searchSite(studio, query) {
+function searchSite(options) {
 	return new Promise(async (resolve, reject) => {
+
+		if (!options.studio || !options.studio.length)
+			return reject("Invalid studio");
+
+		if (!options.query || !options.query.length)
+			return reject("Invalid query");
+
 		try {
-			console.log("Scraping query '" + query + `' from ${studio}` + "...")
-			const browser = await puppeteer.launch(/* { headless: false } */);
+			console.log("Scraping query '" + options.query + `' from ${options.studio}` + "...")
+
+			let browser = options.browser;
+
+			if (!browser) {
+				console.log("Launching new chrome process...");
+				browser = await puppeteer.launch({ headless: options.debug !== true });
+			}
+
 			const [page] = await browser.pages();
 
-			let searchUrl = `https://${studio}.com/search?q=${query}`
-
+			let searchUrl = `https://${options.studio}.com/search?q=${options.query}`
 			await page.goto(searchUrl, { waitUntil: 'networkidle2' });
 
 			let listing = [];
@@ -59,49 +72,85 @@ function searchSite(studio, query) {
 			})
 
 			listing.forEach(video => {
-				video.studio = studio;
+				video.studio = options.studio;
 			})
 
-			await browser.close();
+			if (!options.browser){
+				console.log("Closing chrome...");
+				await browser.close();
+			}
 
 			resolve(listing);
 		} catch (err) {
 			console.error(err);
-			await browser.close();
+			
+			if (!options.browser){
+				console.log("Closing chrome...");
+				await browser.close();
+			}
+			
 			reject(err);
 		}
 	});
 }
 
-function search(query) {
+function search(options) {
 	return new Promise(async (resolve, reject) => {
-		let sites = [
-			"vixen", "tushy", "tushyraw", "blacked", "blackedraw", "deeper"
+		let studios = [
+			// Tushy Raw doesn't currently allow searching
+			"vixen", "tushy", "blacked", "blackedraw", "deeper"
 		];
 
 		let listing = [];
 
-		await asyncPool(2, sites, site => {
+		let browser = options.browser;
+		if (!browser) {
+			console.log("Launching new chrome process...");
+			browser = await puppeteer.launch({ headless: options.debug !== true } );
+		}
+
+		await asyncPool(1, studios, studio => {
 			return new Promise(async (resolve, reject) => {
-				let videos = await searchSite(site, query);
+				let videos = await searchSite({
+					query: options.query,
+					studio,
+					browser
+				});
 				listing = listing.concat(videos);
 				resolve();
 			})
 		});
 
+		if (!options.browser){
+			console.log("Closing chrome...");
+			await browser.close();
+		}
+
 		resolve(listing);
 	})
 }
 
-function getVideo(studio, id) {
+function getVideo(options) {
 	return new Promise(async (resolve, reject) => {
 		try {
-			console.log("Scraping '" + id + `' from ${studio}` + "...")
-			const browser = await puppeteer.launch(/* { headless: false } */);
-			const [page] = await browser.pages();
-			await page.goto(`https://${studio}.com/` + id, { waitUntil: 'networkidle2' });
 
-			const video = new Video(studio, id);
+			if (!options.studio || !options.studio.length)
+				return reject("Invalid studio");
+
+			if (!options.id || !options.id.length)
+				return reject("Invalid id");
+
+			let browser = options.browser;
+			if (!browser) {
+				console.log("Launching new chrome process...");
+				browser = await puppeteer.launch({ headless: options.debug !== true } );
+			}
+
+			console.log("Scraping '" + options.id + `' from ${options.studio}` + "...")
+			const [page] = await browser.pages();
+			await page.goto(`https://${options.studio}.com/` + options.id, { waitUntil: 'networkidle2' });
+
+			const video = new Video(options.studio, options.id);
 
 			video.title = await page.evaluate(() => {
 				return document.querySelector('[data-test-component="VideoTitle"]').firstChild.data;
@@ -138,18 +187,26 @@ function getVideo(studio, id) {
 
 			let initialState = JSON.parse(init);
 
-			let pictures = initialState.page.data["/" + id].data.pictureset.map(p => {
+			let pictures = initialState.page.data["/" + options.id].data.pictureset.map(p => {
 				return p.main[0].src;
 			});
 
 			video.pictures = pictures;
-
-			await browser.close();
+			
+			if (!options.browser){
+				console.log("Closing chrome...");
+				await browser.close();
+			}
 
 			resolve(video);
 		} catch (err) {
 			console.error(err);
-			await browser.close();
+			
+			if (!options.browser){
+				console.log("Closing chrome...");
+				await browser.close();
+			}
+
 			reject(err);
 		}
 	})
@@ -159,7 +216,7 @@ function searchStar(name) {
 	name = name.toLowerCase();
 
 	return new Promise(async (resolve, reject) => {
-		let videos = await search(name);
+		let videos = await search({ query: name });
 		videos = videos.filter(v => v.stars.map(s => s.toLowerCase()).includes(name));
 		resolve(videos);
 	});
