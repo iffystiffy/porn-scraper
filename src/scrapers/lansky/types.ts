@@ -70,6 +70,4 @@ export class Star {
 export interface SearchOptions {
   query: string;
   studio: Site;
-  browser?: puppeteer.Browser;
-  debug?: boolean;
 }

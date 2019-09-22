@@ -11,14 +11,12 @@
   "dependencies": {
     "axios": "^0.19.0",
     "jsdom": "^15.1.1",
-    "puppeteer": "^1.16.0",
     "tiny-async-pool": "^1.0.4"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/jsdom": "^12.2.4",
     "@types/mocha": "^5.2.7",
-    "@types/puppeteer": "^1.19.1",
     "chai": "^4.2.0",
     "mocha": "^6.2.0",
     "ts-node": "^8.3.0",

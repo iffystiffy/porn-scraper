@@ -1,5 +1,3 @@
-import { search, getStar } from "./index";
-
 export type SearchResultsStar = {
   name: string;
   url: string;
@@ -13,6 +11,7 @@ export type Scene = {
 }
 
 export type SearchResults = {
+  searchUrl: string;
   femaleStars: SearchResultsStar[];
   scenes: Scene[];
 }
@@ -41,24 +40,5 @@ export class Actor {
 
   constructor(name: string) {
     this.name = name;
-  }
-
-  public info(): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const result = await search(this.name);
-
-        if (!result.femaleStars.length) {
-          return reject("Star not found!");
-        }
-        const info = await getStar(result.femaleStars[0].url);
-
-        Object.assign(this, info);
-        resolve();
-      }
-      catch (err) {
-        reject(err);
-      }
-    })
   }
 }
