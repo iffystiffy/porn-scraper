@@ -7,10 +7,11 @@
             "es2016",
             "dom"
         ],
-        "outDir": "./dist"
+        "outDir": "./dist",
+        "declaration": true
     },
     "include": [
-        "src/*.ts"
+        "src/**/*.ts"
     ],
     "exclude": [
         "node_modules"

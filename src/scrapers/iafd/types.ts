@@ -1,10 +1,8 @@
-export type IAFDSearchResultsStar = {
+import { search, getStar } from "./index";
+
+export type SearchResultsStar = {
   name: string;
   url: string;
-}
-
-export type IAFDSearchResults = {
-  femaleStars: IAFDSearchResultsStar[];
 }
 
 export type Scene = {
@@ -14,6 +12,11 @@ export type Scene = {
   notes: string[];
 }
 
+export type SearchResults = {
+  femaleStars: SearchResultsStar[];
+  scenes: Scene[];
+}
+
 export class ActorStats {
   ethnicity: string | null = null;
   nationality: string | null = null;
@@ -21,8 +24,8 @@ export class ActorStats {
   height: { imperial: { feet: number, inches: number }, metric: number | null } | null = null;
   weight: { imperial: number, metric: number } | null = null;
   measurements: string | null = null;
-  tattoos: string[] | null= null;
-  piercings: string[] | null= null;
+  tattoos: string[] | null = null;
+  piercings: string[] | null = null;
 }
 
 export class Actor {
@@ -40,7 +43,22 @@ export class Actor {
     this.name = name;
   }
 
-  public info() {
+  public info(): Promise<void> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const result = await search(this.name);
 
+        if (!result.femaleStars.length) {
+          return reject("Star not found!");
+        }
+        const info = await getStar(result.femaleStars[0].url);
+
+        Object.assign(this, info);
+        resolve();
+      }
+      catch (err) {
+        reject(err);
+      }
+    })
   }
 }

@@ -1,6 +1,6 @@
 import { JSDOM } from "jsdom";
 import axios from "axios";
-import { IAFDSearchResults, IAFDSearchResultsStar, Actor, ActorStats } from "../types";
+import * as iafd from "./types";
 
 const IAFD_SEARCH_TEMPLATE = "http://www.iafd.com/results.asp?searchtype=comprehensive&searchstring="
 
@@ -23,7 +23,11 @@ function extractWeight(str: string): { imperial: number, metric: number } {
   }
 }
 
-export function search(query: string): Promise<IAFDSearchResults> {
+export function actor(name: string) {
+  return new iafd.Actor(name);
+}
+
+export function search(query: string): Promise<iafd.SearchResults> {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await axios.get(IAFD_SEARCH_TEMPLATE + query.split(" ").join("+"));
@@ -32,18 +36,21 @@ export function search(query: string): Promise<IAFDSearchResults> {
 
       const femaleStarAnchors = dom.window.document.querySelectorAll("#tblFem tbody tr a");
 
-      const femaleStars = [] as IAFDSearchResultsStar[];
+      const femaleStars = [] as iafd.SearchResultsStar[];
 
       femaleStarAnchors.forEach(anchor => {
         if (anchor.textContent.length)
           femaleStars.push({
             name: anchor.textContent,
-            url: anchor.getAttribute("href")
+            url: "http://www.iafd.com" + anchor.getAttribute("href")
           })
       });
 
+      const scenes = [] as iafd.Scene[];
+
       resolve({
-        femaleStars
+        femaleStars,
+        scenes
       });
     }
     catch (err) {
@@ -52,7 +59,7 @@ export function search(query: string): Promise<IAFDSearchResults> {
   })
 }
 
-export function getStar(url: string): Promise<Actor | null> {
+export function getStar(url: string): Promise<iafd.Actor | null> {
   return new Promise(async (resolve, reject) => {
     try {
       const res = await axios.get(url);
@@ -60,7 +67,7 @@ export function getStar(url: string): Promise<Actor | null> {
       const dom = new JSDOM(res.data);
 
       const name = dom.window.document.querySelector("h1").textContent;
-      const actor = new Actor(name.trim());
+      const actor = new iafd.Actor(name.trim());
 
       actor.thumbnail = dom.window.document.querySelector("#headshot img").getAttribute("src");
 
@@ -88,7 +95,7 @@ export function getStar(url: string): Promise<Actor | null> {
           actor.websites.push(anchor.textContent.trim())
       });
 
-      const stats = new ActorStats();
+      const stats = new iafd.ActorStats();
       const perfBox = dom.window.document.querySelector("#perfbox");
 
       const ethnicity = perfBox.querySelectorAll(".biodata")["0"].textContent.trim();
