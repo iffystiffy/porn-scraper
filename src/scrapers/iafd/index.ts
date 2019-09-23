@@ -57,7 +57,7 @@ export async function search(query: string): Promise<iafd.SearchResults> {
   }
 }
 
-export async function scrapeActor(url: string): Promise<iafd.Actor | null> {
+async function scrapeActor(url: string): Promise<iafd.Actor | null> {
   try {
     const html = (await axios.get(url)).data;
     const dom = new JSDOM(html);
@@ -136,7 +136,7 @@ export async function scrapeActor(url: string): Promise<iafd.Actor | null> {
   }
 }
 
-export async function getActor(name: string): Promise<iafd.Actor | null> {
+export async function actor(name: string): Promise<iafd.Actor | null> {
   const result = await search(name);
 
   if (!result.femaleStars.length) {

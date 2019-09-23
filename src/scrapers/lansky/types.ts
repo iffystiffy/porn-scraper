@@ -1,5 +1,3 @@
-import * as puppeteer from "puppeteer";
-
 export enum Site {
   VIXEN = "vixen",
   TUSHY = "tushy",
@@ -19,6 +17,7 @@ export class Video {
   rating: number | null = null;
   pictures: any[] = []; // !TYPE
   studio: Site;
+  tags: string[] | null = null;
 
   constructor(studio: Site, title: string, id: string) {
     this.id = id;
@@ -36,10 +35,10 @@ export class Star {
   name: string;
   studio: Site;
   biography: string | null = null;
-  dateOfBirth: number| null = null;
-  rating: number| null = null;
-  nationality: string| null = null;
-  thumbnail: string| null = null;
+  dateOfBirth: number | null = null;
+  rating: number | null = null;
+  nationality: string | null = null;
+  thumbnail: string | null = null;
   pictures: any; // !TYPE
 
   body: {
@@ -69,5 +68,10 @@ export class Star {
 
 export interface SearchOptions {
   query: string;
+  studio: Site;
+}
+
+export interface StarOptions {
+  name: string;
   studio: Site;
 }
