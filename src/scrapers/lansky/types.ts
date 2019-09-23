@@ -10,7 +10,7 @@ export enum Site {
 export class Video {
   id: string;
   title: string | null = null;
-  stars: string[];
+  stars: string[] | null = null;
   description: string | null = null;
   duration: string | null = null;
   date: number | null = null;
