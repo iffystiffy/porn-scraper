@@ -5,6 +5,10 @@
   await actor.info(); */
 })();
 
+import LEGALPORNO from "./sites/legalporno";
+
+LEGALPORNO();
+
 // !TODO VIXEN
 // !TODO BLACKED RAW
 // !TODO DEEPER

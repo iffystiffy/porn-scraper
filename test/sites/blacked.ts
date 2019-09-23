@@ -3,7 +3,7 @@ import 'mocha';
 import * as lansky from "../../src/scrapers/lansky/index";
 
 export default (() => {
-  describe("Search Blacked", function () {
+  describe("Blacked", function () {
 
     it("Get frontpage", function (done) {
       this.timeout(15000);

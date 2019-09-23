@@ -3,7 +3,7 @@ import 'mocha';
 import * as iafd from "../../src/scrapers/iafd";
 
 export default (() => {
-  describe(`Search IAFD`, function () {
+  describe(`IAFD`, function () {
     it(`Search 'adria rae': Should contain only Adria Rae in femaleStars`, function (done) {
       this.timeout(15000);
       iafd.search("adria rae")
