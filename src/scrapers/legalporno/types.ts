@@ -43,9 +43,14 @@ export class Video {
 
 export class Star {
   id: number;
-  nationality: string;
-  age: number;
+  nationality: string | null = null;
+  age: number | null = null;
   name: string;
-  tags: string[] | null;
-  thumbnail: string | null;
+  tags: string[] | null = null;
+  thumbnail: string | null = null;
+
+  constructor(id: number, name: string) {
+    this.id = id;
+    this.name = name;
+  }
 }

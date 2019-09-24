@@ -1,7 +1,7 @@
 import * as moment from "moment"
 import { JSDOM } from "jsdom";
 import axios from "axios";
-import { Video } from "./types";
+import { Video, Star } from "./types";
 
 export * from "./types";
 
@@ -80,11 +80,18 @@ async function scrapeAllCards(page: string) {
     const html = (await axios.get(SEARCH_URL)).data;
     const dom = new JSDOM(html);
     const videos = scrapeVideoCards(dom);
-    return videos;
+    return {
+      searchUrl: SEARCH_URL,
+      videos
+    };
   }
   catch (err) {
     throw err;
   }
+}
+
+export async function search(query: string) {
+  return scrapeAllCards(`search/?query=${query.toLowerCase().replace(/ /g, "+")}`)
 }
 
 export async function newest() {
@@ -99,25 +106,60 @@ export async function bestRecent() {
   return scrapeAllCards("best-recent-scenes");
 }
 
-
-// !TODO:
-export async function getStarId(name: string): Promise<number | null> {
+export async function getStarId(name: string) {
   try {
-    // https://www.legalporno.com/api/autocomplete/search?q=emily
+    name = name.trim().toLowerCase();
+    const SEARCH_URL = `https://www.legalporno.com/api/autocomplete/search?q=${name.replace(/ /g, "+")}`;
 
-    return 0;
+    const data = (await axios.get(SEARCH_URL)).data;
+    const found = data.terms.find(obj => obj.type == "model" && obj.name.toLowerCase() == name);
+    return {
+      searchUrl: SEARCH_URL,
+      id: found ? found._id : null
+    }
   }
   catch (err) {
     throw err;
   }
 }
 
-// !TODO:
-export async function star(id: number) {
-  try {
+export async function star(id: number): Promise<{ searchUrl: string, star: Star | null }> {
+  const SEARCH_URL = `https://www.legalporno.com/model/${id}`;
 
+  try {
+    const html = (await axios.get(SEARCH_URL)).data;
+    const dom = new JSDOM(html);
+
+    const name = qs(dom, '.model--description > h2').textContent.trim();
+    const nation = qs(dom, '.model--description table tr:nth-child(1) .text-danger').textContent.trim();
+    const age = qs(dom, '.model--description table tr:nth-child(2) .text-danger').textContent.trim();
+    const tagContainer = qs(dom, '.model--description table tr:nth-child(3)');
+    const thumbnail = qs(dom, '.model--avatar > img').getAttribute("src").trim();
+    const tags =
+      Array.from(tagContainer.querySelectorAll("a"))
+        .map(tagElement => tagElement.textContent.trim());
+
+    const star = new Star(id, name);
+
+    star.name = name;
+    star.nationality = nation || null;
+    star.age = parseInt(age) || null;
+    star.tags = tags || null;
+    star.thumbnail = thumbnail;
+
+    return {
+      searchUrl: SEARCH_URL,
+      star
+    };
   }
   catch (err) {
-    throw err;
+    if (err.response.status == 404) {
+      return {
+        searchUrl: SEARCH_URL,
+        star: null
+      }
+    }
+    else
+      throw err;
   }
 }

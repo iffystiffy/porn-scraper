@@ -5,7 +5,24 @@ import * as legalporno from "../../src/scrapers/legalporno/index";
 export default (() => {
   describe("Legalporno", function () {
 
-    it("Star ID", async function (done) {
+    it("Get null star", async function() {
+      const star = (await legalporno.star(-1)).star;
+      expect(star).to.equal(null);
+    })
+
+    it("Get star", async function() {
+      const star = (await legalporno.star(4174)).star;
+      expect(star).to.not.equal(null);
+      expect(star.name).to.equal("Lina Luxa");
+      expect(star.age).to.be.greaterThan(18);
+      expect(star.nationality).to.equal("France");
+      expect(star.tags).to.be.an("array");
+      expect(star.tags).to.include("double penetration (DP)");
+      expect(star.tags).to.include("anal");
+      expect(star.thumbnail).to.not.equal(null);
+    })
+
+    it("Star ID", async function() {
       const tests = [
         [
           "emily pink",
@@ -30,14 +47,9 @@ export default (() => {
       ] as [string, number][];
 
       for(const test of tests) {
-        const id = await legalporno.getStarId(test[0]);
+        const id = (await legalporno.getStarId(test[0])).id;
         expect(id).to.equal(test[1]);
       }
-
-
-      
-
-      done();
     })
 
     it("extractTitle", function (done) {
@@ -95,10 +107,10 @@ export default (() => {
 
       legalporno.bestRecent()
         .then(result => {
-          expect(result).to.be.an("array")
+          expect(result.videos).to.be.an("array")
             .that.is.not.empty;
 
-          for (const video of result) {
+          for (const video of result.videos) {
             expect(video.title).to.be.a("string").and.not.be.empty;
             expect(video.shootIds).to.be.an("array").and.not.be.empty;
             expect(video.id).to.be.a("number").and.be.greaterThan(0);
@@ -113,10 +125,10 @@ export default (() => {
 
       legalporno.recommended()
         .then(result => {
-          expect(result).to.be.an("array")
+          expect(result.videos).to.be.an("array")
             .that.is.not.empty;
 
-          for (const video of result) {
+          for (const video of result.videos) {
             expect(video.title).to.be.a("string").and.not.be.empty;
             expect(video.shootIds).to.be.an("array").and.not.be.empty;
             expect(video.id).to.be.a("number").and.be.greaterThan(0);
@@ -131,18 +143,42 @@ export default (() => {
 
       legalporno.newest()
         .then(result => {
-          expect(result).to.be.an("array")
+          expect(result.videos).to.be.an("array")
             .that.is.not.empty;
 
-          for (const title of result.map(r => r.title)) {
+          for (const title of result.videos.map(r => r.title)) {
             expect(title).to.be.a("string").and.not.be.empty;
           }
 
-          for (const shootIds of result.map(r => r.shootIds)) {
+          for (const shootIds of result.videos.map(r => r.shootIds)) {
             expect(shootIds).to.be.an("array").and.not.be.empty;
           }
 
-          for (const id of result.map(r => r.id)) {
+          for (const id of result.videos.map(r => r.id)) {
+            expect(id).to.be.a("number").and.be.greaterThan(0);
+          }
+
+          done();
+        })
+    })
+
+    it("Search", function (done) {
+      this.timeout(15000);
+
+      legalporno.search("lina luxa")
+        .then(result => {
+          expect(result.videos).to.be.an("array")
+            .that.is.not.empty;
+
+          for (const title of result.videos.map(r => r.title)) {
+            expect(title).to.be.a("string").and.not.be.empty;
+          }
+
+          for (const shootIds of result.videos.map(r => r.shootIds)) {
+            expect(shootIds).to.be.an("array").and.not.be.empty;
+          }
+
+          for (const id of result.videos.map(r => r.id)) {
             expect(id).to.be.a("number").and.be.greaterThan(0);
           }
 
