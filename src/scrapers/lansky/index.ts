@@ -76,7 +76,7 @@ export function parseVideosAndStars(obj: any, studio: Site): { videos: Video[], 
   }
 }
 
-export async function search(options: SearchOptions): Promise<{ searchUrl: string, videos: Video[], stars: Star[] }> {
+export async function search(options: SearchOptions): Promise<{ searchUrl: string, videos: Video[], stars: Star[], tags: string[] }> {
   try {
     if (!options.studio.length)
       throw "Invalid studio";
@@ -92,10 +92,13 @@ export async function search(options: SearchOptions): Promise<{ searchUrl: strin
     const parsed = getJSONFromScriptTag(scripts[1]);
     const { videos, stars } = parseVideosAndStars(parsed, options.studio);
 
+    const tags = parsed.tags.map(tag => tag.displayName);
+
     return {
       searchUrl: SEARCH_URL.replace(/ /g, "+"),
       videos,
-      stars
+      stars,
+      tags
     };
   }
   catch (error) {
@@ -167,7 +170,7 @@ export async function frontPage(studio: Site) {
     try {
       upcoming = getVideo(parsed.page.data["/"].data.nextScene, studio);
     }
-    catch (err) {}
+    catch (err) { }
 
     return {
       newest,

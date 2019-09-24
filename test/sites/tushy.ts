@@ -5,6 +5,19 @@ import * as lansky from "../../src/scrapers/lansky/index";
 export default (() => {
   describe("Tushy", function () {
 
+    it("Search 'anal': Should contain tag 'First Anal'", function (done) {
+      this.timeout(15000);
+
+      lansky.search({
+        query: "anal",
+        studio: lansky.Site.TUSHY
+      })
+        .then(result => {
+          expect(result.tags).to.include("First Anal");
+          done();
+        })
+    })
+
     it("Get frontpage", function (done) {
       this.timeout(15000);
 
