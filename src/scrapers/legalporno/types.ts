@@ -1,26 +1,38 @@
-export function extractTitle(originalTitle: string) {
-  const titleComponents = originalTitle.split(' ');
-  const sceneIdMatch = titleComponents.slice(-1)[0].match(/(AB|AF|GP|SZ|IV|GIO|RS|TW|MA|FM|SAL|NR|AA|GL|BZ|FS)\d+/); // detect studio prefixes
-  const shootId = sceneIdMatch ? sceneIdMatch[0] : null;
-  const title = sceneIdMatch ? titleComponents.slice(0, -1).join(' ') : originalTitle;
+const LEGALPORNO_STUDIO_REGEX = /(GG|AB|AF|GP|SZ|IV|GIO|RS|TW|MA|FM|SAL|NR|AA|GL|BZ|FS)\d+/gi;
 
-  return { shootId, title };
+export function extractTitle(originalTitle: string): { shootIds: string[] | null, title: string } {
+  const studioMatches =
+    originalTitle.match(LEGALPORNO_STUDIO_REGEX);
+
+  let title = originalTitle;
+  for (const match of studioMatches) {
+    if (title.includes(match))
+      title = title.replace(match, "");
+  }
+
+  if (title.includes("[]"))
+    title = title.replace("[]", "");
+
+  return {
+    shootIds: studioMatches.map(m => m.toUpperCase()),
+    title: title.trim().replace(/  /, " ")
+  };
 }
 
 export class Video {
   id: number;
-  shootId: string;
+  shootIds: string[];
   title: string;
   stars: string[] | null = null;
   duration: number | null = null;
   date: number = null;
-  pictures: string[] | null = null;
+  thumbnail: string | null = null;
   tags: string[] | null = null;
 
   constructor(id: number, originalTitle: string) {
     this.id = id;
-    const { shootId, title } = extractTitle(originalTitle);
-    this.shootId = shootId;
+    const { shootIds, title } = extractTitle(originalTitle);
+    this.shootIds = shootIds;
     this.title = title;
   }
 

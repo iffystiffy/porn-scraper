@@ -23,7 +23,7 @@ function scrapeVideoCards(dom: JSDOM): Video[] {
     const imgStyle = element.querySelector(".thumbnail-avatar").getAttribute("style");
 
     if (imgStyle)
-      video.pictures = [imgStyle.match(/https:.*/)[0]];
+      video.thumbnail = imgStyle.match(/https:.*/)[0];
 
     return video;
   });
@@ -62,7 +62,7 @@ export async function scene(id: number) {
     video.tags = tags;
 
     if (playerElementStyle)
-      video.pictures = [playerElementStyle.match(/https:.*/)[0]];
+      video.thumbnail = playerElementStyle.match(/https:.*/)[0];
 
     return {
       searchUrl: SEARCH_URL,

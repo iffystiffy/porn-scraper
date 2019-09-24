@@ -43,34 +43,48 @@ export default (() => {
     it("extractTitle", function (done) {
       const tests = [
         [
+          "Irina Bruni DAP & creampie (2 cocks in ass) gg414 (exclusive)",
+          "Irina Bruni DAP & creampie (2 cocks in ass) (exclusive)",
+          ["GG414"]
+        ],
+        [
+          "Monica double anal (DP DAP HARDCORE) GG226 (exclusive)",
+          "Monica double anal (DP DAP HARDCORE) (exclusive)",
+          ["GG226"]
+        ],
+        [
+          "Petite slut Polly Petrova assfucked, DPed & DAPed by two monster cocks [SZ2140] BZ011",
+          "Petite slut Polly Petrova assfucked, DPed & DAPed by two monster cocks",
+          ["SZ2140", "BZ011"]
+        ],
+        [
           "Whitney Wright Gets Punished by Two Big Black Cocks AB015",
           "Whitney Wright Gets Punished by Two Big Black Cocks",
-          "AB015"
+          ["AB015"]
         ],
         [
           "Sexy slut Veronica Avluv loves to get stuffed AB021",
           "Sexy slut Veronica Avluv loves to get stuffed",
-          "AB021"
+          ["AB021"]
         ],
         ["Lina Luxa assfucked by 1, 2, 3, 4 guys and then gangbanged by all 10 of them with DP, DAP & cum swallow SZ2284",
           "Lina Luxa assfucked by 1, 2, 3, 4 guys and then gangbanged by all 10 of them with DP, DAP & cum swallow",
-          "SZ2284"
+          ["SZ2284"]
         ],
         ["You have to see this! Luna Lovely with 4 HUGE cocks taking it like the awesome slut she is AA048",
           "You have to see this! Luna Lovely with 4 HUGE cocks taking it like the awesome slut she is",
-          "AA048"
+          ["AA048"]
         ],
         ["Little Sofi Smile plays with two big cocks AF001",
           "Little Sofi Smile plays with two big cocks",
-          "AF001"
+          ["AF001"]
         ]
-      ] as [string, string, string][];
+      ] as [string, string, string[]][];
 
       for (const test of tests) {
-        const { shootId, title } = legalporno.extractTitle(test[0]);
-
+        const { shootIds, title } = legalporno.extractTitle(test[0]);
         expect(title).to.equal(test[1]);
-        expect(shootId).to.equal(test[2]);
+        expect(shootIds).to.deep.equal(test[2]);
       }
 
       done();
@@ -86,7 +100,7 @@ export default (() => {
 
           for (const video of result) {
             expect(video.title).to.be.a("string").and.not.be.empty;
-            expect(video.shootId).to.be.a("string").and.not.be.empty;
+            expect(video.shootIds).to.be.an("array").and.not.be.empty;
             expect(video.id).to.be.a("number").and.be.greaterThan(0);
           }
 
@@ -104,7 +118,7 @@ export default (() => {
 
           for (const video of result) {
             expect(video.title).to.be.a("string").and.not.be.empty;
-            expect(video.shootId).to.be.a("string").and.not.be.empty;
+            expect(video.shootIds).to.be.an("array").and.not.be.empty;
             expect(video.id).to.be.a("number").and.be.greaterThan(0);
           }
 
@@ -124,8 +138,8 @@ export default (() => {
             expect(title).to.be.a("string").and.not.be.empty;
           }
 
-          for (const shootId of result.map(r => r.shootId)) {
-            expect(shootId).to.be.a("string").and.not.be.empty;
+          for (const shootIds of result.map(r => r.shootIds)) {
+            expect(shootIds).to.be.an("array").and.not.be.empty;
           }
 
           for (const id of result.map(r => r.id)) {
@@ -149,7 +163,7 @@ export default (() => {
             .to.have.property("stars")
             .that.includes("Lina Luxa");
           expect(result.video.getUrl()).to.equal("https://legalporno.com/watch/56119");
-          expect(result.video.shootId).to.equal("SZ2284");
+          expect(result.video.shootIds).to.deep.equal(["SZ2284"]);
           expect(result.related)
             .to.be.an("array")
             .that.is.not.empty;
