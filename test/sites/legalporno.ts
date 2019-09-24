@@ -6,11 +6,15 @@ export default (() => {
   describe("Legalporno", function () {
 
     it("Get null star", async function() {
+      this.timeout(15000);
+      
       const star = (await legalporno.star(-1)).star;
       expect(star).to.equal(null);
     })
 
     it("Get star", async function() {
+      this.timeout(15000);
+      
       const star = (await legalporno.star(4174)).star;
       expect(star).to.not.equal(null);
       expect(star.name).to.equal("Lina Luxa");
@@ -23,6 +27,8 @@ export default (() => {
     })
 
     it("Star ID", async function() {
+      this.timeout(15000);
+
       const tests = [
         [
           "emily pink",

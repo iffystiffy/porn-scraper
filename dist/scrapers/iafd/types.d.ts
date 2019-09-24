@@ -9,6 +9,7 @@ export declare type Scene = {
     notes: string[];
 };
 export declare type SearchResults = {
+    searchUrl: string;
     femaleStars: SearchResultsStar[];
     scenes: Scene[];
 };
@@ -45,5 +46,4 @@ export declare class Actor {
     credits: Scene[];
     websites: string[];
     constructor(name: string);
-    info(): Promise<void>;
 }

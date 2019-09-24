@@ -34,10 +34,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsdom_1 = require("jsdom");
 var axios_1 = require("axios");
 var iafd = require("./types");
+__export(require("./types"));
 var IAFD_SEARCH_TEMPLATE = "http://www.iafd.com/results.asp?searchtype=comprehensive&searchstring=";
 // !TODO
 function extractHeight(str) {
@@ -56,19 +60,15 @@ function extractWeight(str) {
         metric: 100
     };
 }
-function actor(name) {
-    return new iafd.Actor(name);
-}
-exports.actor = actor;
 function search(query) {
-    var _this = this;
-    return new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
-        var res, dom, femaleStarAnchors, femaleStars_1, scenes, err_1;
+    return __awaiter(this, void 0, void 0, function () {
+        var SEARCH_URL, res, dom, femaleStarAnchors, femaleStars_1, scenes, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, axios_1.default.get(IAFD_SEARCH_TEMPLATE + query.split(" ").join("+"))];
+                    SEARCH_URL = IAFD_SEARCH_TEMPLATE + query.split(" ").join("+");
+                    return [4 /*yield*/, axios_1.default.get(SEARCH_URL)];
                 case 1:
                     res = _a.sent();
                     dom = new jsdom_1.JSDOM(res.data);
@@ -82,33 +82,31 @@ function search(query) {
                             });
                     });
                     scenes = [];
-                    resolve({
-                        femaleStars: femaleStars_1,
-                        scenes: scenes
-                    });
-                    return [3 /*break*/, 3];
+                    return [2 /*return*/, {
+                            searchUrl: SEARCH_URL,
+                            femaleStars: femaleStars_1,
+                            scenes: scenes
+                        }];
                 case 2:
-                    err_1 = _a.sent();
-                    reject(err_1);
-                    return [3 /*break*/, 3];
+                    error_1 = _a.sent();
+                    throw error_1;
                 case 3: return [2 /*return*/];
             }
         });
-    }); });
+    });
 }
 exports.search = search;
-function getStar(url) {
-    var _this = this;
-    return new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
-        var res, dom, name_1, actor_1, aliases, birthday, birthplace, yearsActiveText, yearsActiveRange, currentYear, websites, stats, perfBox, ethnicity, nationality, hairColor, height, weight, measurements, tattoos, tattoosText, piercings, piercingsText, err_2;
+function scrapeActor(url) {
+    return __awaiter(this, void 0, void 0, function () {
+        var html, dom, name_1, actor_1, aliases, birthday, birthplace, yearsActiveText, yearsActiveRange, currentYear, websites, stats, perfBox, ethnicity, nationality, hairColor, height, weight, measurements, tattoos, tattoosText, piercings, piercingsText, error_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
                     return [4 /*yield*/, axios_1.default.get(url)];
                 case 1:
-                    res = _a.sent();
-                    dom = new jsdom_1.JSDOM(res.data);
+                    html = (_a.sent()).data;
+                    dom = new jsdom_1.JSDOM(html);
                     name_1 = dom.window.document.querySelector("h1").textContent;
                     actor_1 = new iafd.Actor(name_1.trim());
                     actor_1.thumbnail = dom.window.document.querySelector("#headshot img").getAttribute("src");
@@ -161,15 +159,32 @@ function getStar(url) {
                     stats.tattoos = tattoos;
                     stats.piercings = piercings;
                     actor_1.stats = stats;
-                    resolve(actor_1);
-                    return [3 /*break*/, 3];
+                    return [2 /*return*/, actor_1];
                 case 2:
-                    err_2 = _a.sent();
-                    reject(err_2);
-                    return [3 /*break*/, 3];
+                    error_2 = _a.sent();
+                    throw error_2;
                 case 3: return [2 /*return*/];
             }
         });
-    }); });
+    });
 }
-exports.getStar = getStar;
+function actor(name) {
+    return __awaiter(this, void 0, void 0, function () {
+        var result, actor;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, search(name)];
+                case 1:
+                    result = _a.sent();
+                    if (!result.femaleStars.length) {
+                        return [2 /*return*/, null];
+                    }
+                    return [4 /*yield*/, scrapeActor(result.femaleStars[0].url)];
+                case 2:
+                    actor = _a.sent();
+                    return [2 /*return*/, actor];
+            }
+        });
+    });
+}
+exports.actor = actor;

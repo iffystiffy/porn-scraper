@@ -8,14 +8,15 @@ var ActorStats = /** @class */ (function () {
         this.height = null;
         this.weight = null;
         this.measurements = null;
-        this.tattoos = [];
-        this.piercings = [];
+        this.tattoos = null;
+        this.piercings = null;
     }
     return ActorStats;
 }());
 exports.ActorStats = ActorStats;
 var Actor = /** @class */ (function () {
     function Actor(name) {
+        this.thumbnail = null;
         this.aliases = [];
         this.birthday = null;
         this.birthplace = null;
@@ -25,8 +26,6 @@ var Actor = /** @class */ (function () {
         this.websites = [];
         this.name = name;
     }
-    Actor.prototype.info = function () {
-    };
     return Actor;
 }());
 exports.Actor = Actor;
