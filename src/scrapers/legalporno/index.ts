@@ -16,7 +16,7 @@ function scrapeVideoCards(dom: JSDOM): Video[] {
     const originalTitle = sceneLinkElement.textContent.trim();
     const entryId = new URL(url).pathname.split('/')[2];
 
-    const date = moment.utc(element.getAttribute('release'), 'YYYY/MM/DD').toDate().valueOf();
+    const date = moment.utc(element.getAttribute('release'), 'YYYY/MM/DD').valueOf();
 
     const video = new Video(parseInt(entryId), originalTitle);
     video.date = date;
@@ -37,7 +37,7 @@ export async function scene(id: number) {
     const dom = new JSDOM(html);
 
     const originalTitle = qs(dom, 'h1.watchpage-title').textContent.trim();
-    const date = moment.utc(qs(dom, 'span[title="Release date"] a').textContent, 'YYYY-MM-DD').toDate().valueOf();
+    const date = moment.utc(qs(dom, 'span[title="Release date"] a').textContent, 'YYYY-MM-DD').valueOf();
     const [actorsElement, tagsElement] = Array.from(qsAll(dom, '.scene-description__row'));
     const actors =
       Array.from(actorsElement.querySelectorAll('a[href*="com/model"]'))

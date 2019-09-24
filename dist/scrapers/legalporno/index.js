@@ -50,7 +50,7 @@ function scrapeVideoCards(dom) {
         var url = sceneLinkElement.getAttribute("href");
         var originalTitle = sceneLinkElement.textContent.trim();
         var entryId = new URL(url).pathname.split('/')[2];
-        var date = moment.utc(element.getAttribute('release'), 'YYYY/MM/DD').toDate().valueOf();
+        var date = moment.utc(element.getAttribute('release'), 'YYYY/MM/DD').valueOf();
         var video = new types_1.Video(parseInt(entryId), originalTitle);
         video.date = date;
         var imgStyle = element.querySelector(".thumbnail-avatar").getAttribute("style");
@@ -78,7 +78,7 @@ function scene(id) {
                     html = (_b.sent()).data;
                     dom = new jsdom_1.JSDOM(html);
                     originalTitle = qs(dom, 'h1.watchpage-title').textContent.trim();
-                    date = moment.utc(qs(dom, 'span[title="Release date"] a').textContent, 'YYYY-MM-DD').toDate().valueOf();
+                    date = moment.utc(qs(dom, 'span[title="Release date"] a').textContent, 'YYYY-MM-DD').valueOf();
                     _a = Array.from(qsAll(dom, '.scene-description__row')), actorsElement = _a[0], tagsElement = _a[1];
                     actors = Array.from(actorsElement.querySelectorAll('a[href*="com/model"]'))
                         .map(function (actorElement) { return actorElement.textContent; });

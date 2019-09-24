@@ -9,6 +9,7 @@ export class Video {
   id: number;
   title: string;
   stars: string[] | null = null;
+  date: number | null = null;
   addedOn: number | null = null;
   tags: string[] | null = null;
   description: string | null = null;
@@ -21,10 +22,11 @@ export class Video {
   constructor(id: number, title: string, site: Site) {
     this.id = id;
     this.title = title;
+    this.site = site;
   }
 
   getUrl() {
-    return ``;
+    return `https://www.${this.site}.com/en/video/${this.id}`;
   }
 }
 

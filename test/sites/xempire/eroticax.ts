@@ -9,7 +9,7 @@ import { Video, Star, Site } from "../../../src/scrapers/xempire/types";
     it("Get scene 148199", async function () {
       this.timeout(15000);
 
-      const data = await xempire.scene(Site.HARDX, 148199);
+      const data = await xempire.scene(Site.EROTICAX, 148199);
 
       expect(data.video).to.not.equal(null);
       expect(data.video.addedOn).to.be.greaterThan(0);

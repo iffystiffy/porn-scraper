@@ -4,6 +4,45 @@ import { JSDOM } from "jsdom";
 import { qsAll, qs } from "../../util";
 import * as moment from "moment";
 
+export async function frontPage(site: Site): Promise<{ latest: Video[], stars: Star[] }> {
+  try {
+    const SEARCH_URL = `https://www.${site}.com/en`;
+    const http = (await axios.get(SEARCH_URL)).data;
+    const dom = new JSDOM(http);
+
+    return {
+      latest: scrapeCards(dom, site),
+      stars: [] // !TODO
+    }
+  }
+  catch (err) {
+    throw err;
+  }
+}
+
+function scrapeCards(dom: JSDOM, site: Site): Video[] {
+  const cardElements = Array.from(qsAll(dom, ".scene"));
+
+  return cardElements.map(card => {
+    const id = parseInt(card.querySelector(".imgLink").getAttribute("data-id").trim());
+    const title = card.querySelector(".sceneTitle a").getAttribute("title").trim();
+    const stars = [...new Set(
+      Array
+        .from(card.querySelectorAll(".sceneActors a"))
+        .map(actorTag => actorTag.getAttribute("title").trim())
+    )];
+    const dateString = card.querySelector(".sceneDate").textContent.trim();
+    const thumbnail = card.querySelector(".imgLink img").getAttribute("data-original");
+
+    const video = new Video(id, title, site);
+    video.stars = stars;
+    video.date = moment.utc(dateString, "MM-DD-YYYY").valueOf();
+    video.thumbnail = thumbnail;
+
+    return video;
+  });
+}
+
 export async function scene(site: Site, id: number) {
   try {
     const SEARCH_URL = `https://www.${site}.com/en/video/scene/${id}`;
@@ -15,7 +54,12 @@ export async function scene(site: Site, id: number) {
 
     const title = qs(dom, 'meta[name="twitter:title"]')
       .getAttribute("content").trim();
-    const addedOn = moment.utc(data.dateCreated, 'YYYY-MM-DD').toDate().valueOf();
+    const addedOn = moment.utc(data.dateCreated, 'YYYY-MM-DD').valueOf();
+
+    const dateElement = qs(dom, ".updatedDate");
+    const cleanedDateString = dateElement.textContent.replace(/\n/g, "").trim();
+    const date = moment.utc(cleanedDateString, 'MM-DD-YYYY').valueOf();
+    
     const actors = data.actor
       .sort(({ gender: genderA }, { gender: genderB }) => {
         if (genderA === 'female' && genderB === 'male') return -1;
@@ -41,10 +85,11 @@ export async function scene(site: Site, id: number) {
     video.duration = duration;
     video.tags = tags;
     video.thumbnail = thumbnail;
+    video.date = date;
 
     return {
       video,
-      related: [] // !TODO
+      related: scrapeCards(dom, site)
     }
   }
   catch (error) {
