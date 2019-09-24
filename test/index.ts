@@ -3,23 +3,22 @@
 
   /* const actor = new lib.Actor("adria rae");
   await actor.info(); */
+
+
 })();
 
-import LEGALPORNO from "./sites/legalporno";
+import "./sites/xempire/lesbianx";
+import "./sites/xempire/darkx";
+import "./sites/xempire/eroticax";
+import "./sites/xempire/hardx";
 
-LEGALPORNO();
+import "./sites/legalporno";
 
 // !TODO VIXEN
 // !TODO BLACKED RAW
 // !TODO DEEPER
-import TUSHY from "./sites/tushy";
-import BLACKED from "./sites/blacked";
-import TUSHY_RAW from "./sites/tushy_raw";
+import "./sites/lansky/tushy";
+import "./sites/lansky/blacked";
+import "./sites/lansky/tushy_raw";
 
-TUSHY();
-BLACKED();
-TUSHY_RAW();
-
-import IAFD from "./sites/iafd";
-
-IAFD();
+import "./sites/iafd";

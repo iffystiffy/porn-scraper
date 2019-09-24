@@ -1,14 +1,14 @@
 import { expect } from 'chai';
 import 'mocha';
-import * as lansky from "../../src/scrapers/lansky/index";
+import * as lansky from "../../../src/scrapers/lansky/index";
 
-export default (() => {
-  describe("Blacked", function () {
+(() => {
+  describe("Tushy Raw", function () {
 
     it("Get frontpage", function (done) {
       this.timeout(15000);
 
-      lansky.frontPage(lansky.Site.BLACKED)
+      lansky.frontPage(lansky.Site.TUSHY_RAW)
         .then(result => {
           expect(result)
             .to.be.an("object")
@@ -38,12 +38,12 @@ export default (() => {
         })
     })
 
-    it("Get 'Zoey Laine': Should contain Zoey Laine and her video(s)", function (done) {
+    it("Get 'Emily Willis': Should contain Emily Willis and her video(s)", function (done) {
       this.timeout(15000);
 
       lansky.star({
-        name: "Zoey Laine",
-        studio: lansky.Site.BLACKED
+        name: "Emily Willis",
+        studio: lansky.Site.TUSHY_RAW
       })
         .then(result => {
           expect(result)
@@ -51,43 +51,41 @@ export default (() => {
             .to.have.property("videos")
             .that.is.an("array")
             .with.length(1);
-          expect(result.videos[0].title).to.equal("A Crush on my Neighbor");
-          expect(result.videos[0].id).to.equal("a-crush-on-my-neighbor");
+          expect(result.videos[0].title).to.equal("New Comfort Zone");
+          expect(result.videos[0].id).to.equal("new-comfort-zone");
+          expect(result.videos[0].tags).to.not.be.empty;
           expect(result)
             .to.have.nested.property("star")
             .that.has.nested.property("name")
-            .that.equals("Zoey Laine");
+            .that.equals("Emily Willis");
 
           done();
         })
     })
 
-    it("Search 'Zoey Laine': Should contain 2 stars (Zoey Laine, Zoey Monroe)", function (done) {
+    it("Search 'Jaye': Should contain Jaye Summers in search results", function (done) {
       this.timeout(15000);
 
       lansky.search({
-        query: "zoey laine",
-        studio: lansky.Site.BLACKED
+        query: "Jaye",
+        studio: lansky.Site.TUSHY_RAW
       })
         .then(result => {
           expect(result)
             .to.be.an("object")
             .to.have.property("stars")
             .that.is.an("array")
-            .with.length(2);
-
+            .with.length(1);
           expect(result)
             .to.have.nested.property("stars[0]")
             .that.has.nested.property("name")
-            .that.equals("Zoey Laine");
+            .that.equals("Jaye Summers");
 
-          expect(result)
-            .to.have.nested.property("stars[1]")
-            .that.has.nested.property("name")
-            .that.equals("Zoey Monroe");
+          const jaye = result.stars[0] as lansky.Star;
+          expect(jaye.getUrl()).to.equal("https://tushyraw.com/jaye-summers");
 
           done();
         })
     })
   });
-})
+})();

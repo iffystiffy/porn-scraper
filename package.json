@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "mocha -r ts-node/register test/index.ts"
+    "test": "mocha --bail -r ts-node/register test/index.ts"
   },
   "author": "boiii123212321",
   "license": "ISC",

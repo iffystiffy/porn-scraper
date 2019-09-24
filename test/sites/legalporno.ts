@@ -2,19 +2,19 @@ import { expect } from 'chai';
 import 'mocha';
 import * as legalporno from "../../src/scrapers/legalporno/index";
 
-export default (() => {
+(() => {
   describe("Legalporno", function () {
 
-    it("Get null star", async function() {
+    it("Get null star", async function () {
       this.timeout(15000);
-      
+
       const star = (await legalporno.star(-1)).star;
       expect(star).to.equal(null);
     })
 
-    it("Get star", async function() {
+    it("Get star", async function () {
       this.timeout(15000);
-      
+
       const star = (await legalporno.star(4174)).star;
       expect(star).to.not.equal(null);
       expect(star.name).to.equal("Lina Luxa");
@@ -26,7 +26,7 @@ export default (() => {
       expect(star.thumbnail).to.not.equal(null);
     })
 
-    it("Star ID", async function() {
+    it("Star ID", async function () {
       this.timeout(15000);
 
       const tests = [
@@ -52,7 +52,7 @@ export default (() => {
         ]
       ] as [string, number][];
 
-      for(const test of tests) {
+      for (const test of tests) {
         const id = (await legalporno.getStarId(test[0])).id;
         expect(id).to.equal(test[1]);
       }
@@ -214,4 +214,4 @@ export default (() => {
         })
     })
   })
-})
+})();

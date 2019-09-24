@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import 'mocha';
-import * as lansky from "../../src/scrapers/lansky/index";
+import * as lansky from "../../../src/scrapers/lansky/index";
 
-export default (() => {
+(() => {
   describe("Tushy", function () {
 
     it("Search 'anal': Should contain tag 'First Anal'", function (done) {
@@ -69,4 +69,4 @@ export default (() => {
         })
     })
   });
-})
+})();

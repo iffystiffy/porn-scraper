@@ -2,6 +2,7 @@ import * as moment from "moment"
 import { JSDOM } from "jsdom";
 import axios from "axios";
 import { Video, Star } from "./types";
+import { qsAll, qs } from "../../util";
 
 export * from "./types";
 
@@ -27,14 +28,6 @@ function scrapeVideoCards(dom: JSDOM): Video[] {
 
     return video;
   });
-}
-
-function qsAll(dom: JSDOM, query: string) {
-  return dom.window.document.querySelectorAll(query);
-}
-
-function qs(dom: JSDOM, query: string) {
-  return dom.window.document.querySelector(query);
 }
 
 export async function scene(id: number) {
