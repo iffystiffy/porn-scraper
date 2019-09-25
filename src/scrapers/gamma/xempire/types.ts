@@ -2,7 +2,8 @@ export enum Site {
   HARDX = "hardx",
   DARXK = "darkx",
   EROTICAX = "eroticax",
-  LESBIANX = "lesbianx"
+  LESBIANX = "lesbianx",
+  XEMPIRE = "xempire"
 }
 
 export class Video {
@@ -26,7 +27,7 @@ export class Video {
   }
 
   getUrl() {
-    return `https://www.${this.site}.com/en/video/${this.id}`;
+    return `https://www.${this.site}.com/en/video/scene/${this.id}`;
   }
 }
 

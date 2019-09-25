@@ -187,8 +187,8 @@ export async function frontPage(studio: Site) {
 }
 
 export async function scene(id: string, studio: Site) {
+  const SEARCH_URL = `https://${studio}.com/${id}`;
   try {
-    const SEARCH_URL = `https://${studio}.com/${id}`;
     const html = (await axios.get(SEARCH_URL)).data as string;
     const scripts = html.match(/(<|%3C)script[\s\S]*?(>|%3E)[\s\S]*?(<|%3C)(\/|%2F)script[\s\S]*?(>|%3E)/gi);
     const parsed = getJSONFromScriptTag(scripts[2]);
@@ -229,6 +229,11 @@ export async function scene(id: string, studio: Site) {
     }
   }
   catch (error) {
+    if (error.response.status == 404)
+      return {
+        searchUrl: SEARCH_URL,
+        video: null
+      }
     throw error;
   }
 }

@@ -3,12 +3,12 @@ import 'mocha';
 import * as lansky from "../../../src/scrapers/lansky/index";
 
 (() => {
-  describe("Tushy", function () {
+  describe("Vixen", function () {
 
     it("Get frontpage", function (done) {
       this.timeout(15000);
 
-      lansky.frontPage(lansky.Site.TUSHY)
+      lansky.frontPage(lansky.Site.VIXEN)
         .then(result => {
           expect(result)
           .to.be.an("object")
@@ -41,19 +41,9 @@ import * as lansky from "../../../src/scrapers/lansky/index";
     it("Get stars page 1", function (done) {
       this.timeout(15000);
 
-      lansky.stars(lansky.Site.TUSHY)
+      lansky.stars(lansky.Site.VIXEN)
       .then(result => {
         expect(result.stars.length).to.equal(18);
-        done();
-      })
-    })
-
-    it("Get top rated videos page 10000", function (done) {
-      this.timeout(15000);
-
-      lansky.topRated(lansky.Site.TUSHY, 10000)
-      .then(result => {
-        expect(result.videos.length).to.equal(0);
         done();
       })
     })
@@ -61,9 +51,19 @@ import * as lansky from "../../../src/scrapers/lansky/index";
     it("Get awarded videos page 1", function (done) {
       this.timeout(15000);
 
-      lansky.awarded(lansky.Site.TUSHY)
+      lansky.awarded(lansky.Site.VIXEN)
       .then(result => {
         expect(result.videos.length).to.equal(12);
+        done();
+      })
+    })
+
+    it("Get top rated videos page 10000", function (done) {
+      this.timeout(15000);
+
+      lansky.topRated(lansky.Site.VIXEN, 10000)
+      .then(result => {
+        expect(result.videos.length).to.equal(0);
         done();
       })
     })
@@ -71,7 +71,7 @@ import * as lansky from "../../../src/scrapers/lansky/index";
     it("Get top rated videos page 1", function (done) {
       this.timeout(15000);
 
-      lansky.topRated(lansky.Site.TUSHY)
+      lansky.topRated(lansky.Site.VIXEN)
       .then(result => {
         expect(result.videos.length).to.equal(12);
         done();
@@ -81,86 +81,75 @@ import * as lansky from "../../../src/scrapers/lansky/index";
     it("Get latest videos page 1", function (done) {
       this.timeout(15000);
 
-      lansky.latest(lansky.Site.TUSHY)
+      lansky.latest(lansky.Site.VIXEN)
       .then(result => {
         expect(result.videos.length).to.equal(12);
         done();
       })
     })
 
-    it("Get scene 'can-we-make-it-up-to-you'", function (done) {
+    it("Get 'Haley Reed': Should contain Haley Reed and her video(s)", function (done) {
       this.timeout(15000);
 
-      lansky.scene("can-we-make-it-up-to-you", lansky.Site.TUSHY)
+      lansky.star({
+        name: "Haley Reed",
+        studio: lansky.Site.VIXEN
+      })
+        .then(result => {
+          expect(result)
+            .to.be.an("object")
+            .to.have.property("videos")
+            .that.is.an("array")
+            .with.length.greaterThan(0);
+          expect(result.videos.map(v => v.title)).to.include("A Perfect Opportunity");
+          expect(result)
+            .to.have.nested.property("star")
+            .that.has.nested.property("name")
+            .that.equals("Haley Reed");
+
+          done();
+        })
+    })
+
+    it("Search 'jia lissa': Should contain 1 star", function (done) {
+      this.timeout(15000);
+
+      lansky.search({
+        query: "jia lissa",
+        studio: lansky.Site.VIXEN
+      })
+        .then(result => {
+          expect(result)
+            .to.be.an("object")
+            .to.have.property("stars")
+            .that.is.an("array")
+            .with.length(1);
+
+          expect(result)
+            .to.have.nested.property("stars[0]")
+            .that.has.nested.property("name")
+            .that.equals("Jia Lissa");
+
+          done();
+        })
+    })
+
+    it("Get scene 'travelling-alone'", function (done) {
+      this.timeout(15000);
+
+      lansky.scene("travelling-alone", lansky.Site.VIXEN)
       .then(result => {
-        expect(result.video.title).to.equal("Can We Make It Up To You?");
-        expect(result.video.stars).to.be.an("array").that.includes("Avi Love");
-        expect(result.video.stars).to.include("Emily Willis");
-        expect(result.video.tags).to.be.an("array").that.includes("gape");
+        expect(result.video.title).to.equal("Travelling Alone");
+        expect(result.video.stars).to.be.an("array").that.includes("Jia Lissa");
 
         done();
       })
     });
 
-    it("Search 'anal': Should contain tag 'First Anal'", function (done) {
-      this.timeout(15000);
-
-      lansky.search({
-        query: "anal",
-        studio: lansky.Site.TUSHY
-      })
-        .then(result => {
-          expect(result.tags).to.include("First Anal");
-          done();
-        })
-    })
-
-    it("Search 'Kristen Scott': Should contain 3 videos", function (done) {
-      this.timeout(15000);
-
-      lansky.search({
-        query: "kristen scott",
-        studio: lansky.Site.TUSHY
-      })
-        .then(result => {
-          expect(result)
-            .to.be.an("object")
-            .to.have.property("videos")
-            .that.is.an("array")
-            .with.length(3);
-
-          done();
-        })
-    })
-
-    it("Get 'Stacy Cruz': Should contain Stacy Cruz and her video(s)", function (done) {
-      this.timeout(15000);
-
-      lansky.star({
-        name: "Stacy Cruz",
-        studio: lansky.Site.TUSHY
-      })
-        .then(result => {
-          expect(result)
-            .to.be.an("object")
-            .to.have.property("videos")
-            .that.is.an("array")
-            .with.length(1);
-          expect(result.videos[0].title).to.equal("One Last Time");
-          expect(result.videos[0].id).to.equal("one-last-time");
-          expect(result)
-            .to.have.nested.property("star")
-            .that.has.nested.property("name")
-            .that.equals("Stacy Cruz");
-
-          done();
-        })
-    })
-
     it("Get null scene", function (done) {
       this.timeout(15000);
 
-      lansky.scene("xyz", lansky.Site.TUSHY_RAW)
+      lansky.scene("xyz", lansky.Site.VIXEN)
       .then(result => {
         expect(result.video).to.equal(null);
 

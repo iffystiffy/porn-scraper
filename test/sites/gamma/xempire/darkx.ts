@@ -1,15 +1,22 @@
 import { expect } from 'chai';
 import 'mocha';
-import * as xempire from "../../../src/scrapers/xempire/index";
-import { Video, Star, Site } from "../../../src/scrapers/xempire/types";
+import * as gamma from "../../../../src/scrapers/gamma/xempire/index";
+import { Video, Star, Site } from "../../../../src/scrapers/gamma/xempire/types";
 
 (() => {
   describe("DarkX", function () {
 
+    it("Get frontpage", async function() {
+      this.timeout(15000);
+
+      const frontpage = await gamma.frontPage(Site.DARXK);
+      expect(frontpage.latest).to.have.length.greaterThan(0);
+    })
+
     it("Get scene 149412", async function () {
       this.timeout(15000);
 
-      const data = await xempire.scene(Site.DARXK, 149412);
+      const data = await gamma.scene(Site.DARXK, 149412);
 
       expect(data.video).to.not.equal(null);
       expect(data.video.addedOn).to.be.greaterThan(0);

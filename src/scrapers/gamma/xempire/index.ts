@@ -1,7 +1,7 @@
 import { Video, Star, Site } from "./types";
 import axios from "axios";
 import { JSDOM } from "jsdom";
-import { qsAll, qs } from "../../util";
+import { qsAll, qs } from "../../../util";
 import * as moment from "moment";
 
 export async function frontPage(site: Site): Promise<{ latest: Video[], stars: Star[] }> {
@@ -24,7 +24,7 @@ function scrapeCards(dom: JSDOM, site: Site): Video[] {
   const cardElements = Array.from(qsAll(dom, ".scene"));
 
   return cardElements.map(card => {
-    const id = parseInt(card.querySelector(".imgLink").getAttribute("data-id").trim());
+    const id = parseInt(card.getAttribute("data-itemid").trim());
     const title = card.querySelector(".sceneTitle a").getAttribute("title").trim();
     const stars = [...new Set(
       Array
@@ -32,7 +32,7 @@ function scrapeCards(dom: JSDOM, site: Site): Video[] {
         .map(actorTag => actorTag.getAttribute("title").trim())
     )];
     const dateString = card.querySelector(".sceneDate").textContent.trim();
-    const thumbnail = card.querySelector(".imgLink img").getAttribute("data-original");
+    const thumbnail = card.querySelector("img.img").getAttribute("data-original");
 
     const video = new Video(id, title, site);
     video.stars = stars;
@@ -50,7 +50,9 @@ export async function scene(site: Site, id: number) {
     const dom = new JSDOM(http);
 
     const json = qs(dom, 'script[type="application/ld+json"]').innerHTML;
-    const data = JSON.parse(json)[0];
+    const dataArray = JSON.parse(json);
+
+    const data = dataArray[1] || dataArray[0];
 
     const title = qs(dom, 'meta[name="twitter:title"]')
       .getAttribute("content").trim();
@@ -59,7 +61,7 @@ export async function scene(site: Site, id: number) {
     const dateElement = qs(dom, ".updatedDate");
     const cleanedDateString = dateElement.textContent.replace(/\n/g, "").trim();
     const date = moment.utc(cleanedDateString, 'MM-DD-YYYY').valueOf();
-    
+
     const actors = data.actor
       .sort(({ gender: genderA }, { gender: genderB }) => {
         if (genderA === 'female' && genderB === 'male') return -1;
@@ -68,7 +70,8 @@ export async function scene(site: Site, id: number) {
         return 0;
       })
       .map(actor => actor.name);
-    const description = data.description || undefined;
+    const description = qs(dom, 'meta[name="twitter:description"]')
+      .getAttribute("content").trim();
     const stars = (data.aggregateRating.ratingValue / data.aggregateRating.bestRating) * 5;
     const duration = moment.duration(data.duration.slice(2).split(':')).asSeconds();
     const tags = data.keywords.split(', ').map(t => t.trim());
