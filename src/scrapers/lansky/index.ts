@@ -185,3 +185,138 @@ export async function frontPage(studio: Site) {
     throw error;
   }
 }
+
+export async function scene(id: string, studio: Site) {
+  try {
+    const SEARCH_URL = `https://${studio}.com/${id}`;
+    const html = (await axios.get(SEARCH_URL)).data as string;
+    const scripts = html.match(/(<|%3C)script[\s\S]*?(>|%3E)[\s\S]*?(<|%3C)(\/|%2F)script[\s\S]*?(>|%3E)/gi);
+    const parsed = getJSONFromScriptTag(scripts[2]);
+
+    const shootId = parsed.page.data[`/${id}`].data.video;
+    const scene = parsed.videos.find(video => video.newId === shootId);
+
+    const {
+      title,
+      description,
+      models: actors,
+      textRating: rating,
+      runLength: duration,
+      directorNames: director,
+      tags
+    } = scene;
+
+    const video = new Video(studio, title, id);
+    video.description = description;
+    video.stars = actors;
+    video.rating = parseFloat(rating);
+    video.date = new Date(scene.releaseDate).valueOf();
+    video.duration = duration;
+    video.director = director;
+    video.tags = tags;
+    video.pictures = [
+      scene.tourCarouselSizes,
+      scene.videoPosterSizes,
+      scene.trippleThumbUrlSizes,
+      scene.trippleThumbPixelatedUrlSizes,
+      scene.rotatingThumbsUrlSizes,
+      scene.timelineThumbPatterns
+    ]
+
+    return {
+      searchUrl: SEARCH_URL,
+      video
+    }
+  }
+  catch (error) {
+    throw error;
+  }
+}
+
+export async function latest(studio: Site, page?: number) {
+  try {
+    const SEARCH_URL = `https://${studio}.com/videos?page=${Math.max(page, 1)}&size=12`;
+    const html = (await axios.get(SEARCH_URL)).data as string;
+    const scripts = html.match(/(<|%3C)script[\s\S]*?(>|%3E)[\s\S]*?(<|%3C)(\/|%2F)script[\s\S]*?(>|%3E)/gi);
+    const parsed = getJSONFromScriptTag(scripts[1]);
+
+    const videos =
+      parsed.videos
+        .map(video => getVideo(video, studio))
+        .sort((a, b) => b.date - a.date);
+
+    return {
+      searchUrl: SEARCH_URL,
+      videos
+    }
+  }
+  catch (error) {
+    throw error;
+  }
+}
+
+export async function topRated(studio: Site, page?: number) {
+  try {
+    const SEARCH_URL = `https://${studio}.com/toprated?page=${Math.max(page, 1)}&size=12`;
+    const html = (await axios.get(SEARCH_URL)).data as string;
+    const scripts = html.match(/(<|%3C)script[\s\S]*?(>|%3E)[\s\S]*?(<|%3C)(\/|%2F)script[\s\S]*?(>|%3E)/gi);
+    const parsed = getJSONFromScriptTag(scripts[1]);
+
+    const videos =
+      parsed.videos
+        .map(video => getVideo(video, studio))
+        .sort((a, b) => b.date - a.date);
+
+    return {
+      searchUrl: SEARCH_URL,
+      videos
+    }
+  }
+  catch (error) {
+    throw error;
+  }
+}
+
+export async function awarded(studio: Site, page?: number) {
+  try {
+    const SEARCH_URL = `https://${studio}.com/awards?page=${Math.max(page, 1)}&size=12`;
+    const html = (await axios.get(SEARCH_URL)).data as string;
+    const scripts = html.match(/(<|%3C)script[\s\S]*?(>|%3E)[\s\S]*?(<|%3C)(\/|%2F)script[\s\S]*?(>|%3E)/gi);
+    const parsed = getJSONFromScriptTag(scripts[1]);
+
+    const videos =
+      parsed.videos
+        .map(video => getVideo(video, studio))
+        .sort((a, b) => b.date - a.date);
+
+    return {
+      searchUrl: SEARCH_URL,
+      videos
+    }
+  }
+  catch (error) {
+    throw error;
+  }
+}
+
+export async function stars(studio: Site, page?: number) {
+  try {
+    const SEARCH_URL = `https://${studio}.com/models?page=${Math.max(page, 1)}`;
+    const html = (await axios.get(SEARCH_URL)).data as string;
+    const scripts = html.match(/(<|%3C)script[\s\S]*?(>|%3E)[\s\S]*?(<|%3C)(\/|%2F)script[\s\S]*?(>|%3E)/gi);
+    const parsed = getJSONFromScriptTag(scripts[1]);
+
+    const stars =
+      parsed.models
+        .map(star => getStar(star, studio))
+        .sort((a, b) => b.date - a.date);
+
+    return {
+      searchUrl: SEARCH_URL,
+      stars
+    }
+  }
+  catch (error) {
+    throw error;
+  }
+}

@@ -18,6 +18,7 @@ export class Video {
   pictures: any[] = []; // !TYPE
   studio: Site;
   tags: string[] | null = null;
+  director: string | null = null;
 
   constructor(studio: Site, title: string, id: string) {
     this.id = id;

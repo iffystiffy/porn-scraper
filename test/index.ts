@@ -7,12 +7,12 @@
 
 })();
 
-import "./sites/xempire/hardx";
+/* import "./sites/xempire/hardx";
 import "./sites/xempire/lesbianx";
 import "./sites/xempire/darkx";
 import "./sites/xempire/eroticax";
 
-import "./sites/legalporno";
+import "./sites/legalporno"; */
 
 // !TODO VIXEN
 // !TODO BLACKED RAW
