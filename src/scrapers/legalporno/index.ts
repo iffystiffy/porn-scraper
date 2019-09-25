@@ -83,20 +83,20 @@ async function scrapeAllCards(page: string) {
   }
 }
 
-export async function search(query: string) {
-  return scrapeAllCards(`search/?query=${query.toLowerCase().replace(/ /g, "+")}`)
+export async function search(query: string, page?: number) {
+  return scrapeAllCards(`search/${query.toLowerCase()}/${Math.max(page || 1, 1)}`)
 }
 
-export async function newest() {
-  return scrapeAllCards("new-videos");
+export async function newest(page?: number) {
+  return scrapeAllCards(`new-videos/${Math.max(page || 1, 1)}`);
 }
 
-export async function recommended() {
-  return scrapeAllCards("recommended");
+export async function recommended(page?: number) {
+  return scrapeAllCards(`recommended/${Math.max(page || 1, 1)}`);
 }
 
-export async function bestRecent() {
-  return scrapeAllCards("best-recent-scenes");
+export async function bestRecent(page?: number) {
+  return scrapeAllCards(`best-recent-scenes/${Math.max(page || 1, 1)}`);
 }
 
 export async function getStarId(name: string) {

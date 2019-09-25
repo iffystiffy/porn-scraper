@@ -235,7 +235,7 @@ export async function scene(id: string, studio: Site) {
 
 export async function latest(studio: Site, page?: number) {
   try {
-    const SEARCH_URL = `https://${studio}.com/videos?page=${Math.max(page, 1)}&size=12`;
+    const SEARCH_URL = `https://${studio}.com/videos?page=${Math.max(page || 1, 1)}&size=12`;
     const html = (await axios.get(SEARCH_URL)).data as string;
     const scripts = html.match(/(<|%3C)script[\s\S]*?(>|%3E)[\s\S]*?(<|%3C)(\/|%2F)script[\s\S]*?(>|%3E)/gi);
     const parsed = getJSONFromScriptTag(scripts[1]);
@@ -257,7 +257,7 @@ export async function latest(studio: Site, page?: number) {
 
 export async function topRated(studio: Site, page?: number) {
   try {
-    const SEARCH_URL = `https://${studio}.com/toprated?page=${Math.max(page, 1)}&size=12`;
+    const SEARCH_URL = `https://${studio}.com/toprated?page=${Math.max(page || 1, 1)}&size=12`;
     const html = (await axios.get(SEARCH_URL)).data as string;
     const scripts = html.match(/(<|%3C)script[\s\S]*?(>|%3E)[\s\S]*?(<|%3C)(\/|%2F)script[\s\S]*?(>|%3E)/gi);
     const parsed = getJSONFromScriptTag(scripts[1]);
@@ -279,7 +279,7 @@ export async function topRated(studio: Site, page?: number) {
 
 export async function awarded(studio: Site, page?: number) {
   try {
-    const SEARCH_URL = `https://${studio}.com/awards?page=${Math.max(page, 1)}&size=12`;
+    const SEARCH_URL = `https://${studio}.com/awards?page=${Math.max(page || 1, 1)}&size=12`;
     const html = (await axios.get(SEARCH_URL)).data as string;
     const scripts = html.match(/(<|%3C)script[\s\S]*?(>|%3E)[\s\S]*?(<|%3C)(\/|%2F)script[\s\S]*?(>|%3E)/gi);
     const parsed = getJSONFromScriptTag(scripts[1]);
@@ -301,7 +301,7 @@ export async function awarded(studio: Site, page?: number) {
 
 export async function stars(studio: Site, page?: number) {
   try {
-    const SEARCH_URL = `https://${studio}.com/models?page=${Math.max(page, 1)}`;
+    const SEARCH_URL = `https://${studio}.com/models?page=${Math.max(page || 1, 1)}`;
     const html = (await axios.get(SEARCH_URL)).data as string;
     const scripts = html.match(/(<|%3C)script[\s\S]*?(>|%3E)[\s\S]*?(<|%3C)(\/|%2F)script[\s\S]*?(>|%3E)/gi);
     const parsed = getJSONFromScriptTag(scripts[1]);
