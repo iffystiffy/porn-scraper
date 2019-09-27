@@ -1,22 +1,46 @@
 import { expect } from 'chai';
 import 'mocha';
-import * as gamma from "../../../../src/scrapers/gamma/xempire/index";
+import * as xempire from "../../../../src/scrapers/gamma/xempire/index";
 import { Video, Star, Site } from "../../../../src/scrapers/gamma/xempire/types";
 
 (() => {
   describe("EroticaX", function () {
 
+    it("Search 'blonde' videos, page 2", async function() {
+      this.timeout(15000);
+
+      const result = await xempire.searchVideos(Site.EROTICAX, "blonde", 2);
+      expect(result.videos.length).to.equal(15);
+    })
+
+    it("Search 'blonde' videos, page 1", async function() {
+      this.timeout(15000);
+
+      const result = await xempire.searchVideos(Site.EROTICAX, "blonde");
+      expect(result.videos.length).to.equal(15);
+    })
+
+    it("Get Marley Brinx's page", async function () {
+      this.timeout(15000);
+
+      const result = await xempire.star(Site.EROTICAX, "Marley Brinx", 36247);
+      expect(result.star.name).to.equal("Marley Brinx");
+      expect(result.videos.length).to.be.greaterThan(1);
+      expect(result.star.thumbnail).to.not.equal(null);
+    })
+
     it("Get frontpage", async function() {
       this.timeout(15000);
 
-      const frontpage = await gamma.frontPage(Site.EROTICAX);
-      expect(frontpage.latest).to.have.length.greaterThan(0);
+      const frontpage = await xempire.frontPage(Site.EROTICAX);
+      expect(frontpage.latest.length).to.equal(8);
+      expect(frontpage.mostViewedStars.length).to.equal(16);
     })
 
     it("Get scene 148199", async function () {
       this.timeout(15000);
 
-      const data = await gamma.scene(Site.EROTICAX, 148199);
+      const data = await xempire.scene(Site.EROTICAX, 148199);
 
       expect(data.video).to.not.equal(null);
       expect(data.video.addedOn).to.be.greaterThan(0);

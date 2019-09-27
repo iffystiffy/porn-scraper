@@ -2,8 +2,7 @@ export enum Site {
   HARDX = "hardx",
   DARXK = "darkx",
   EROTICAX = "eroticax",
-  LESBIANX = "lesbianx",
-  XEMPIRE = "xempire"
+  LESBIANX = "lesbianx"
 }
 
 export class Video {
@@ -34,9 +33,14 @@ export class Video {
 export class Star {
   id: number;
   name: string;
+  thumbnail: string | null = null;
 
   constructor(id: number, name: string) {
     this.id = id;
     this.name = name;
+  }
+
+  getUrl() {
+    return `https://www.hardx.com/en/pornstar/${this.name.replace(/ /g, "-")}/${this.id}`;
   }
 }
