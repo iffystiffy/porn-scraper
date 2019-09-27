@@ -5,6 +5,18 @@ import * as legalporno from "../../src/scrapers/legalporno/index";
 (() => {
   describe("Legalporno", function () {
 
+    it("Search non-sense", function (done) {
+      this.timeout(15000);
+
+      legalporno.search("asdasdawrerage")
+        .then(result => {
+          expect(result.videos).to.be.an("array")
+            .that.is.empty;
+
+          done();
+        })
+    })
+
     it("Get null star", async function () {
       this.timeout(15000);
 

@@ -6,14 +6,29 @@ import { Video, Star, Site } from "../../../../src/scrapers/gamma/xempire/types"
 (() => {
   describe("DarkX", function () {
 
-    it("Search 'anal' videos, page 4", async function() {
+    it("Get null star page", async function () {
+      this.timeout(15000);
+
+      const result = await xempire.star(Site.DARXK,  123);
+      expect(result.star).to.equal(null);
+      expect(result.videos.length).to.equal(0);
+    })
+
+    it("Search 'asasdasdqweqwr' videos", async function () {
+      this.timeout(15000);
+
+      const result = await xempire.searchVideos(Site.DARXK, "asasdasdqweqwr");
+      expect(result.videos.length).to.equal(0);
+    })
+
+    it("Search 'anal' videos, page 4", async function () {
       this.timeout(15000);
 
       const result = await xempire.searchVideos(Site.DARXK, "anal", 4);
       expect(result.videos.length).to.equal(15);
     })
 
-    it("Search 'anal' videos, page 1", async function() {
+    it("Search 'anal' videos, page 1", async function () {
       this.timeout(15000);
 
       const result = await xempire.searchVideos(Site.DARXK, "anal");
@@ -23,13 +38,13 @@ import { Video, Star, Site } from "../../../../src/scrapers/gamma/xempire/types"
     it("Get Jill Kassidy's page", async function () {
       this.timeout(15000);
 
-      const result = await xempire.star(Site.DARXK, "Jill Kassidy", 50684);
+      const result = await xempire.star(Site.DARXK,  50684);
       expect(result.star.name).to.equal("Jill Kassidy");
       expect(result.videos.length).to.be.greaterThan(0);
       expect(result.star.thumbnail).to.not.equal(null);
     })
 
-    it("Get frontpage", async function() {
+    it("Get frontpage", async function () {
       this.timeout(15000);
 
       const frontpage = await xempire.frontPage(Site.DARXK);

@@ -6,6 +6,21 @@ import { Video, Star, Site } from "../../../../src/scrapers/gamma/xempire/types"
 (() => {
   describe("HardX", function () {
 
+    it("Get null star page", async function () {
+      this.timeout(15000);
+
+      const result = await xempire.star(Site.HARDX,  123);
+      expect(result.star).to.equal(null);
+      expect(result.videos.length).to.equal(0);
+    })
+
+    it("Search 'asasdasdqweqwr' videos", async function() {
+      this.timeout(15000);
+
+      const result = await xempire.searchVideos(Site.HARDX, "asasdasdqweqwr");
+      expect(result.videos.length).to.equal(0);
+    })
+
     it("Search 'anal' videos, page 5", async function() {
       this.timeout(15000);
 
@@ -23,7 +38,7 @@ import { Video, Star, Site } from "../../../../src/scrapers/gamma/xempire/types"
     it("Get Lexi Lore's page", async function () {
       this.timeout(15000);
 
-      const result = await xempire.star(Site.HARDX, "Lexi Lore", 53220);
+      const result = await xempire.star(Site.HARDX, 53220);
       expect(result.star.name).to.equal("Lexi Lore");
       expect(result.videos.length).to.be.greaterThan(1);
       expect(result.star.thumbnail).to.not.equal(null);

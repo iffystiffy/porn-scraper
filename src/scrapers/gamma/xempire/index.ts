@@ -143,17 +143,29 @@ export async function scene(site: Site, id: number) {
   }
 }
 
-export async function star(site: Site, name: string, id: number) {
-  const SEARCH_URL = `https://www.${site}.com/en/pornstar/${name.replace(/ /g, "-")}/${id}`;
+export async function star(site: Site, id: number) {
+  const SEARCH_URL = `https://www.${site}.com/en/pornstar/a/${id}`;
 
   try {
-    const star = new Star(id, name);
     const http = (await axios.get(SEARCH_URL)).data;
     const dom = new JSDOM(http);
-
+    
     const videos = scrapeCards(dom, site);
 
+    const actorNameElement = qs(dom, ".actorName strong");
+
+    if (!actorNameElement) {
+      return {
+        searchUrl: SEARCH_URL,
+        star: null,
+        videos: []
+      }
+    }
+    
+    const name = actorNameElement.textContent;
     const thumbnail = qs(dom, ".actorPicture").getAttribute("src");
+
+    const star = new Star(id, name);
     star.thumbnail = thumbnail;
 
     return {

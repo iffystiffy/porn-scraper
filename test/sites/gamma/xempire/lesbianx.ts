@@ -6,6 +6,21 @@ import { Video, Star, Site } from "../../../../src/scrapers/gamma/xempire/types"
 (() => {
   describe("LesbianX", function () {
 
+    it("Get null star page", async function () {
+      this.timeout(15000);
+
+      const result = await xempire.star(Site.LESBIANX,  123);
+      expect(result.star).to.equal(null);
+      expect(result.videos.length).to.equal(0);
+    })
+
+    it("Search 'asasdasdqweqwr' videos", async function() {
+      this.timeout(15000);
+
+      const result = await xempire.searchVideos(Site.LESBIANX, "asasdasdqweqwr");
+      expect(result.videos.length).to.equal(0);
+    })
+
     it("Search 'brunette' videos, page 2", async function() {
       this.timeout(15000);
 
@@ -23,7 +38,7 @@ import { Video, Star, Site } from "../../../../src/scrapers/gamma/xempire/types"
     it("Get Whitney Wright's page", async function () {
       this.timeout(15000);
 
-      const result = await xempire.star(Site.LESBIANX, "Whitney Wright", 49436);
+      const result = await xempire.star(Site.LESBIANX, 49436);
       expect(result.star.name).to.equal("Whitney Wright");
       expect(result.videos.length).to.be.greaterThan(3);
       expect(result.star.thumbnail).to.not.equal(null);
