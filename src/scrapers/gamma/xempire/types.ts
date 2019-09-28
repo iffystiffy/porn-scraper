@@ -46,3 +46,21 @@ export class Star {
     return `https://www.${this.site}.com/en/pornstar/${this.name.replace(/ /g, "-")}/${this.id}`;
   }
 }
+
+export class DVD {
+  id: number;
+  name: string;
+  thumbnail: string | null = null;
+  site: Site;
+  stars: string[] | null = null;
+
+  constructor(id: number, name: string, site: Site) {
+    this.id = id;
+    this.name = name;
+    this.site = site;
+  }
+
+  getUrl() {
+    return `https://www.${this.site}.com/en/movie/${this.name.replace(/ /g, "-")}/${this.id}`;
+  }
+}

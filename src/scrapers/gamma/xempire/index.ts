@@ -1,4 +1,4 @@
-import { Video, Star, Site } from "./types";
+import { Video, Star, Site, DVD } from "./types";
 import axios from "axios";
 import { JSDOM } from "jsdom";
 import { qsAll, qs } from "../../../util";
@@ -165,7 +165,7 @@ export async function star(site: Site, id: number) {
   try {
     const http = (await axios.get(SEARCH_URL)).data;
     const dom = new JSDOM(http);
-    
+
     const videos = scrapeCards(dom, site);
 
     const actorNameElement = qs(dom, ".actorName strong");
@@ -177,7 +177,7 @@ export async function star(site: Site, id: number) {
         videos: []
       }
     }
-    
+
     const name = actorNameElement.textContent;
     const thumbnail = qs(dom, ".actorPicture").getAttribute("src");
 
@@ -221,6 +221,38 @@ export async function searchStars(site: Site, query: string, page?: number) {
 
     return {
       videos: scrapeTlcStarCards(dom, site),
+      searchUrl: SEARCH_URL
+    }
+  }
+  catch (error) {
+    throw error;
+  }
+}
+
+type SitesWithDVDs = Site.DARXK | Site.EROTICAX | Site.HARDX;
+
+export async function searchDvds(site: SitesWithDVDs, query: string, page?: number) {
+  const SEARCH_URL = `https://www.${site}.com/en/search/${query.toLowerCase()}/dvd/${Math.max(page || 1, 1)}`;
+
+  try {
+    const http = (await axios.get(SEARCH_URL)).data;
+    const dom = new JSDOM(http);
+
+    const cardElements = Array.from(qsAll(dom, ".tlcItem"));
+
+    const dvds = cardElements.map(card => {
+      const id = parseInt(card.getAttribute("data-itemid").trim());
+      const title = card.querySelector(".tlcTitle a").getAttribute("title").trim();
+      const thumbnail = card.querySelector("img").getAttribute("src");
+
+      const dvd = new DVD(id, title, site);
+      dvd.thumbnail = thumbnail;
+
+      return dvd;
+    });
+
+    return {
+      dvds,
       searchUrl: SEARCH_URL
     }
   }

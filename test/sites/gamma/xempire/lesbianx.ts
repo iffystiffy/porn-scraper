@@ -5,7 +5,7 @@ import { Video, Star, Site } from "../../../../src/scrapers/gamma/xempire/types"
 
 (() => {
   describe("LesbianX", function () {
-
+    
     it("Search 'izzy lush' stars", async function() {
       this.timeout(15000);
 

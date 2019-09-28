@@ -5,6 +5,13 @@ import { Video, Star, Site } from "../../../../src/scrapers/gamma/xempire/types"
 
 (() => {
   describe("EroticaX", function () {
+
+    it("Search 'anal' DVDs", async function() {
+      this.timeout(15000);
+
+      const result = await xempire.searchDvds(Site.EROTICAX, "anal");
+      expect(result.dvds.length).to.be.greaterThan(0);
+    })
     
     it("Search 'emily' stars", async function() {
       this.timeout(15000);
