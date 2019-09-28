@@ -6,6 +6,27 @@ import { Video, Star, Site } from "../../../../src/scrapers/gamma/xempire/types"
 (() => {
   describe("HardX", function () {
 
+    it("Get 'Super Cute Vol. 10'", async function() {
+      this.timeout(15000);
+
+      const result = await xempire.dvd(Site.HARDX, 77573);
+      expect(result.videos.length).to.equal(4);
+      expect(result.videos[3].title).to.equal("19 And Anal");
+
+      expect(result.dvd.title).to.equal("Super Cute Vol. 10");
+      expect(result.dvd.description).to.include("This highly anticipated series features adorable girls");
+      expect(result.dvd.duration).to.equal(8892);
+      expect(result.dvd.stars).to.include("Alina Lopez");
+      expect(result.dvd.stars).to.include("Arietta Adams");
+      expect(result.dvd.stars.length).to.be.greaterThan(3);
+      expect(result.dvd.frontCover).to.not.equal(null);
+      expect(result.dvd.backCover).to.not.equal(null);
+
+      expect(result.stars.length).to.be.greaterThan(3);
+      expect(result.stars.map(s => s.name)).to.include("Arietta Adams");
+      expect(result.stars.find(s => s.name == "Arietta Adams").id).to.equal(58830);
+    })
+
     it("Search 'anal' DVDs", async function() {
       this.timeout(15000);
 

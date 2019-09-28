@@ -6,6 +6,27 @@ import { Video, Star, Site } from "../../../../src/scrapers/gamma/xempire/types"
 (() => {
   describe("DarkX", function () {
 
+    it("Get 'Interracial Teens Vol. 5'", async function() {
+      this.timeout(15000);
+
+      const result = await xempire.dvd(Site.DARXK, 76239);
+      expect(result.videos.length).to.equal(4);
+      expect(result.videos[1].title).to.equal("You Have My Permission");
+
+      expect(result.dvd.title).to.equal("Interracial Teens Vol. 5");
+      expect(result.dvd.description).to.include("Starring the stunning, Whitney Wright, blonde beauty, Haley Reed, the adorable, Jessica Rex, and exotic Karly Baker");
+      expect(result.dvd.duration).to.equal(8463);
+      expect(result.dvd.stars).to.include("Whitney Wright");
+      expect(result.dvd.stars).to.include("Haley Reed");
+      expect(result.dvd.stars.length).to.be.greaterThan(3);
+      expect(result.dvd.frontCover).to.not.equal(null);
+      expect(result.dvd.backCover).to.not.equal(null);
+
+      expect(result.stars.length).to.be.greaterThan(3);
+      expect(result.stars.map(s => s.name)).to.include("Whitney Wright");
+      expect(result.stars.find(s => s.name == "Whitney Wright").id).to.equal(49436);
+    })
+
     it("Search 'anal' DVDs", async function() {
       this.timeout(15000);
 

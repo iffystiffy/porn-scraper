@@ -7,8 +7,8 @@ import * as moment from "moment";
 export async function frontPage(site: Site): Promise<{ latest: Video[], mostViewedStars: Star[] }> {
   try {
     const SEARCH_URL = `https://www.${site}.com/en`;
-    const http = (await axios.get(SEARCH_URL)).data;
-    const dom = new JSDOM(http);
+    const html = (await axios.get(SEARCH_URL)).data;
+    const dom = new JSDOM(html);
 
     return {
       latest: scrapeCards(dom, site),
@@ -105,8 +105,8 @@ function scrapeTlcStarCards(dom: JSDOM, site: Site): Star[] {
 export async function scene(site: Site, id: number) {
   try {
     const SEARCH_URL = `https://www.${site}.com/en/video/scene/${id}`;
-    const http = (await axios.get(SEARCH_URL)).data;
-    const dom = new JSDOM(http);
+    const html = (await axios.get(SEARCH_URL)).data;
+    const dom = new JSDOM(html);
 
     const json = qs(dom, 'script[type="application/ld+json"]').innerHTML;
     const dataArray = JSON.parse(json);
@@ -163,8 +163,8 @@ export async function star(site: Site, id: number) {
   const SEARCH_URL = `https://www.${site}.com/en/pornstar/a/${id}`;
 
   try {
-    const http = (await axios.get(SEARCH_URL)).data;
-    const dom = new JSDOM(http);
+    const html = (await axios.get(SEARCH_URL)).data;
+    const dom = new JSDOM(html);
 
     const videos = scrapeCards(dom, site);
 
@@ -199,8 +199,8 @@ export async function searchVideos(site: Site, query: string, page?: number) {
   const SEARCH_URL = `https://www.${site}.com/en/search/${query.toLowerCase()}/scene/${Math.max(page || 1, 1)}`;
 
   try {
-    const http = (await axios.get(SEARCH_URL)).data;
-    const dom = new JSDOM(http);
+    const html = (await axios.get(SEARCH_URL)).data;
+    const dom = new JSDOM(html);
 
     return {
       videos: scrapeTlcCards(dom, site),
@@ -235,8 +235,8 @@ export async function searchDvds(site: SitesWithDVDs, query: string, page?: numb
   const SEARCH_URL = `https://www.${site}.com/en/search/${query.toLowerCase()}/dvd/${Math.max(page || 1, 1)}`;
 
   try {
-    const http = (await axios.get(SEARCH_URL)).data;
-    const dom = new JSDOM(http);
+    const html = (await axios.get(SEARCH_URL)).data;
+    const dom = new JSDOM(html);
 
     const cardElements = Array.from(qsAll(dom, ".tlcItem"));
 
@@ -246,7 +246,7 @@ export async function searchDvds(site: SitesWithDVDs, query: string, page?: numb
       const thumbnail = card.querySelector("img").getAttribute("src");
 
       const dvd = new DVD(id, title, site);
-      dvd.thumbnail = thumbnail;
+      dvd.frontCover = thumbnail;
 
       return dvd;
     });
@@ -254,6 +254,52 @@ export async function searchDvds(site: SitesWithDVDs, query: string, page?: numb
     return {
       dvds,
       searchUrl: SEARCH_URL
+    }
+  }
+  catch (error) {
+    throw error;
+  }
+}
+
+export async function dvd(site: Site, id: number) {
+  const SEARCH_URL = `https://www.${site}.com/en/movie/a/${id}`;
+
+  try {
+    const html = (await axios.get(SEARCH_URL)).data;
+    const dom = new JSDOM(html);
+
+    const title = qs(dom, ".dvdTitle").textContent;
+    const front = qs(dom, ".frontCoverImg").getAttribute("href");
+    const back = qs(dom, ".backCoverImg").getAttribute("href");
+    const dateString = qs(dom, ".updatedOn").textContent.trim();
+    const durationString = qs(dom, ".length").textContent.replace("|", "").trim();
+    const description = qs(dom, ".descriptionText").textContent.trim();
+
+    const scripts = html.match(/(<|%3C)script[\s\S]*?(>|%3E)[\s\S]*?(<|%3C)(\/|%2F)script[\s\S]*?(>|%3E)/gi);
+    const dataScript = scripts.find(s => s.includes("dataLayer ="));
+    const parsed = JSON.parse(dataScript.slice(dataScript.indexOf('[{'), dataScript.indexOf('}];') + 2));
+    const actors = parsed[0].dvdDetails.dvdActors as { actorId: string, actorName: string }[];
+    const stars = actors.map(i => {
+      return {
+        id: parseInt(i.actorId),
+        name: i.actorName
+      }
+    }) as { id: number, name: string }[];
+
+    const dvd = new DVD(id, title, site);
+    dvd.title = title;
+    dvd.frontCover = front;
+    dvd.backCover = back;
+    dvd.date = moment.utc(dateString, 'YYYY:MM:DD').valueOf();
+    dvd.duration = moment.duration(durationString).asSeconds();
+    dvd.description = description;
+    dvd.stars = stars.map(s => s.name);
+
+    return {
+      searchUrl: SEARCH_URL,
+      dvd,
+      videos: scrapeCards(dom, site),
+      stars
     }
   }
   catch (error) {

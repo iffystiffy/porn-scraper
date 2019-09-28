@@ -6,6 +6,27 @@ import { Video, Star, Site } from "../../../../src/scrapers/gamma/xempire/types"
 (() => {
   describe("EroticaX", function () {
 
+    it("Get 'Internal Love Vol. 5'", async function() {
+      this.timeout(15000);
+
+      const result = await xempire.dvd(Site.EROTICAX, 76146);
+      expect(result.videos.length).to.equal(4);
+      expect(result.videos[3].title).to.equal("Forbidden Fruit");
+
+      expect(result.dvd.title).to.equal("Internal Love Vol. 5");
+      expect(result.dvd.description).to.include("Four stories of the most intimate moments between couples are presented");
+      expect(result.dvd.duration).to.equal(7812);
+      expect(result.dvd.stars).to.include("Emma Starletto");
+      expect(result.dvd.stars).to.include("Gianna Dior");
+      expect(result.dvd.stars.length).to.be.greaterThan(3);
+      expect(result.dvd.frontCover).to.not.equal(null);
+      expect(result.dvd.backCover).to.not.equal(null);
+
+      expect(result.stars.length).to.be.greaterThan(3);
+      expect(result.stars.map(s => s.name)).to.include("Emma Starletto");
+      expect(result.stars.find(s => s.name == "Emma Starletto").id).to.equal(57662);
+    })
+
     it("Search 'anal' DVDs", async function() {
       this.timeout(15000);
 
