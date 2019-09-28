@@ -6,6 +6,16 @@ import { Video, Star, Site } from "../../../../src/scrapers/gamma/xempire/types"
 (() => {
   describe("HardX", function () {
 
+    it("Search 'emily' stars", async function() {
+      this.timeout(15000);
+
+      const result = await xempire.searchStars(Site.HARDX, "emily");
+      expect(result.videos.length).to.equal(1);
+      expect(result.videos[0].name).to.equal("Emily Willis");
+      expect(result.videos[0].id).to.equal(51922);
+      expect(result.videos[0].thumbnail).to.not.equal(null);
+    })
+
     it("Get null star page", async function () {
       this.timeout(15000);
 

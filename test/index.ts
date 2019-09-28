@@ -10,12 +10,12 @@ import * as lansky from "../src/scrapers/lansky/index";
 /* import "./sites/gamma/1000facials";
 import "./sites/gamma/throated"; */
 
-import "./sites/legalporno";
-
 import "./sites/gamma/xempire/hardx";
 import "./sites/gamma/xempire/lesbianx";
 import "./sites/gamma/xempire/darkx";
 import "./sites/gamma/xempire/eroticax";
+
+import "./sites/legalporno";
 
 import "./sites/lansky/deeper";
 import "./sites/lansky/vixen";

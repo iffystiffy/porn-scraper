@@ -32,7 +32,7 @@ function scrapeStarCards(dom: JSDOM, site: Site): Star[] {
     const name = card.querySelector(".pornstarNameBox strong").textContent.trim();
     const thumbnail = card.querySelector("img").getAttribute("data-original");
 
-    const star = new Star(id, name);
+    const star = new Star(id, name, site);
     star.thumbnail = thumbnail;
 
     return star;
@@ -83,6 +83,22 @@ function scrapeTlcCards(dom: JSDOM, site: Site): Video[] {
     video.thumbnail = thumbnail;
 
     return video;
+  });
+}
+
+// Used in search results
+function scrapeTlcStarCards(dom: JSDOM, site: Site): Star[] {
+  const cardElements = Array.from(qsAll(dom, ".tlcItem"));
+
+  return cardElements.map(card => {
+    const id = parseInt(card.getAttribute("data-itemid").trim());
+    const title = card.querySelector(".tlcTitle a").getAttribute("title").trim();
+    const thumbnail = card.querySelector("img").getAttribute("src");
+
+    const star = new Star(id, title, site);
+    star.thumbnail = thumbnail;
+
+    return star;
   });
 }
 
@@ -165,7 +181,7 @@ export async function star(site: Site, id: number) {
     const name = actorNameElement.textContent;
     const thumbnail = qs(dom, ".actorPicture").getAttribute("src");
 
-    const star = new Star(id, name);
+    const star = new Star(id, name, site);
     star.thumbnail = thumbnail;
 
     return {
@@ -188,6 +204,23 @@ export async function searchVideos(site: Site, query: string, page?: number) {
 
     return {
       videos: scrapeTlcCards(dom, site),
+      searchUrl: SEARCH_URL
+    }
+  }
+  catch (error) {
+    throw error;
+  }
+}
+
+export async function searchStars(site: Site, query: string, page?: number) {
+  const SEARCH_URL = `https://www.${site}.com/en/search/${query.toLowerCase()}/actor/${Math.max(page || 1, 1)}`;
+
+  try {
+    const http = (await axios.get(SEARCH_URL)).data;
+    const dom = new JSDOM(http);
+
+    return {
+      videos: scrapeTlcStarCards(dom, site),
       searchUrl: SEARCH_URL
     }
   }

@@ -34,13 +34,15 @@ export class Star {
   id: number;
   name: string;
   thumbnail: string | null = null;
+  site: Site;
 
-  constructor(id: number, name: string) {
+  constructor(id: number, name: string, site: Site) {
     this.id = id;
     this.name = name;
+    this.site = site;
   }
 
   getUrl() {
-    return `https://www.hardx.com/en/pornstar/${this.name.replace(/ /g, "-")}/${this.id}`;
+    return `https://www.${this.site}.com/en/pornstar/${this.name.replace(/ /g, "-")}/${this.id}`;
   }
 }

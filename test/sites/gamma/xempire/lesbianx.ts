@@ -6,6 +6,16 @@ import { Video, Star, Site } from "../../../../src/scrapers/gamma/xempire/types"
 (() => {
   describe("LesbianX", function () {
 
+    it("Search 'izzy lush' stars", async function() {
+      this.timeout(15000);
+
+      const result = await xempire.searchStars(Site.LESBIANX, "izzy lush");
+      expect(result.videos.length).to.equal(1);
+      expect(result.videos[0].name).to.equal("Izzy Lush");
+      expect(result.videos[0].id).to.equal(58223);
+      expect(result.videos[0].thumbnail).to.not.equal(null);
+    })
+
     it("Get null star page", async function () {
       this.timeout(15000);
 
