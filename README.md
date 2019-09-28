@@ -13,3 +13,9 @@ VIXEN Network
 - VIXEN
 
 Legalporno
+
+XEmpire
+- HardX
+- DarkX
+- EroticaX
+- LesbianX
