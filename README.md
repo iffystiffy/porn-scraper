@@ -19,3 +19,11 @@ Data modeling & scraping various porn sites
   - DarkX
   - EroticaX
   - LesbianX
+
+### Partially supported/Work in progress
+
+- **Jules Jordan**
+
+- **IAFD**
+
+- **Babesource**
