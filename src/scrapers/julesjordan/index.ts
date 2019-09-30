@@ -10,27 +10,6 @@ export async function scene(id: string) {
     const html = (await axios.get(SEARCH_URL)).data as string;
     const dom = new JSDOM(html);
 
-    /* const originalTitle = qs(dom, 'h1.watchpage-title').textContent.trim();
-    const date = moment.utc(qs(dom, 'span[title="Release date"] a').textContent, 'YYYY-MM-DD').valueOf();
-    const [actorsElement, tagsElement] = Array.from(qsAll(dom, '.scene-description__row'));
-    const actors =
-      Array.from(actorsElement.querySelectorAll('a[href*="com/model"]'))
-        .map(actorElement => actorElement.textContent);
-    const duration = moment.duration(qs(dom, 'span[title="Runtime"]').textContent.trim()).asSeconds();
-    const tags =
-      Array.from(tagsElement.querySelectorAll("a"))
-        .map(tagElement => tagElement.textContent);
-    const playerElementStyle = qs(dom, "#player").getAttribute("style");
-
-    const video = new Video(id, originalTitle);
-    video.date = date;
-    video.stars = actors; // !TODO: get actor IDs to access URLs
-    video.duration = duration;
-    video.tags = tags; */
-
-    //if (playerElementStyle)
-    //  video.thumbnail = playerElementStyle.match(/https:.*/)[0];
-
     const title = qs(dom, ".title_bar_hilite").textContent.trim();
     const description = qs(dom, ".update_description").textContent.trim();
     const dateString = qs(dom, ".cell.update_date").textContent.trim();
