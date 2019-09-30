@@ -4,18 +4,18 @@ Data modeling & scraping various porn sites
 
 ### Supported
 
-VIXEN Network
-- BLACKED
-- BLACKED RAW
-- DEEPER
-- TUSHY
-- TUSHY RAW
-- VIXEN
+- **VIXEN Network**
+  - BLACKED
+  - BLACKED RAW
+  - DEEPER
+  - TUSHY
+  - TUSHY RAW
+  - VIXEN
 
-Legalporno
+- **Legalporno**
 
-XEmpire
-- HardX
-- DarkX
-- EroticaX
-- LesbianX
+- **XEmpire**
+  - HardX
+  - DarkX
+  - EroticaX
+  - LesbianX
